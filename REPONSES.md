@@ -2,7 +2,7 @@
 dotnet. 10.0 est visé 
 oui :     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-ca aevolué avec les nouvelles version de dotnet ils font un cahce avec une seule pile 
+ca a evolué avec les nouvelles version de dotnet ils font un cahce avec une seule pile 
 
 ▪ Pourquoi c1.X et s1.X n’ont-ils pas la même valeur ?
 
