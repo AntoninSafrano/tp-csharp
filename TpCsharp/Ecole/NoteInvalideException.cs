@@ -1,5 +1,6 @@
 namespace Ecole;
 
+// exception quand une ligne du fichier est fausse on garde le numero de la ligne
 public class NoteInvalideException : Exception
 {
     public int Ligne { get; }

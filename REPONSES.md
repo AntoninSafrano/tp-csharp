@@ -78,7 +78,6 @@ with fait une copie en changeant juste les champs qu'on veut l'original change p
 == entre deux Etudiant avec les memes données
 
 false parce que Etudiant c'est une classe normale donc == compare les references et c'est deux objets differents en memoire
-meme avec IEquatable que j'ai rajouté apres Equals donne true mais == reste false vu que j'ai pas redefini l'operateur ==
 
 6.4 resultat deux erreurs sur Console.Error ligne 5 abc c'est pas un nombre et ligne 7 la note 25 est pas entre 0 et 20 puis le programme continue et affiche le relevé des 3 etudiants
 
@@ -89,20 +88,3 @@ meme avec IEquatable que j'ai rajouté apres Equals donne true mais == reste fal
 je l'ai mise dans Etudiant parce que c'est lui qui a les notes faut juste garder le coef de chaque note donc j'ai rajouté une liste _coefs a coté de _notes et AjouterNote prend un coef en plus avec 1 par defaut comme ca l'ancien code marche toujours
 MoyennePonderee fait somme des note x coef divisé par la somme des coefs
 Alan a 9 coef 3 et 12 coef 2 ca fait 51/5 = 10.20 alors que la moyenne simple fait 10.50
-
-pour aller plus loin
-
-tests xunit
-j'ai fait la solution Tp.slnx avec TpCsharp et TpCsharp.Tests et dotnet test passe 18 tests
-moyenne sans note moyenne de plusieurs notes note hors bornes avec Assert.Throws NomComplet et Mention avec Theory et InlineData plus la moyenne ponderée et l'egalité
-Theory avec InlineData ca lance le meme test plusieurs fois avec des valeurs differentes au lieu d'ecrire un Fact par cas
-
-struct Point2D
-readonly struct donc on peut pas modifier X ou Y apres la creation faut faire une copie avec with
-p2 = p1 puis on change p2 et p1 bouge pas car c'est une struct donc copie par valeur
-pareil pour Centre de Forme quand je recupere rond.Centre j'ai une copie si je la modifie le centre du cercle change pas
-
-IEquatable
-Equals compare Nom Prenom et Naissance j'ai aussi redefini Equals(object?) et GetHashCode avec HashCode.Combine sur les memes champs
-faut redefinir GetHashCode sinon le HashSet range les deux objets a des endroits differents et les voit comme differents
-dans le HashSet j'ajoute deux Ada identiques et Alan ca donne 2 elements donc le doublon est bien detecté

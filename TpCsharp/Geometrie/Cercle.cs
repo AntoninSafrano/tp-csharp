@@ -1,5 +1,6 @@
 namespace Geometrie;
 
+// un cercle avec son rayon
 public class Cercle : Forme
 {
     public double Rayon { get; }
@@ -23,6 +24,7 @@ public class Cercle : Forme
         return 2 * Math.PI * Rayon;
     }
 
+    // on reprend le texte de Forme et on ajoute le rayon
     public override string Decrire()
     {
         return $"{base.Decrire()}, rayon {Rayon}";

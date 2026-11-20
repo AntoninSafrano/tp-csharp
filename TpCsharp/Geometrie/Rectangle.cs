@@ -1,5 +1,6 @@
 namespace Geometrie;
 
+// un rectangle avec largeur et hauteur
 public class Rectangle : Forme
 {
     public double Largeur { get; }
@@ -9,6 +10,7 @@ public class Rectangle : Forme
     {
     }
 
+    // protected pour que Carre puisse donner son propre nom
     protected Rectangle(string nom, double largeur, double hauteur) : base(nom)
     {
         if (largeur <= 0 || hauteur <= 0)

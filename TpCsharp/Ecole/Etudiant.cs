@@ -1,15 +1,19 @@
 namespace Ecole;
 
-public class Etudiant : IEquatable<Etudiant>
+// un etudiant avec ses notes et ses coefs
+public class Etudiant
 {
+    // les notes sont privees on passe par AjouterNote pour les verifier
     private List<double> _notes = new List<double>();
     private List<int> _coefs = new List<int>();
     private int _annee;
 
     public string Nom { get; }
     public string Prenom { get; }
+    // init donc on peut la donner juste a la creation
     public DateOnly Naissance { get; init; }
 
+    // annee entre 1 et 5 sinon exception
     public int Annee
     {
         get { return _annee; }
@@ -23,12 +27,15 @@ public class Etudiant : IEquatable<Etudiant>
         }
     }
 
+    // proprietes calculees
     public string NomComplet => $"{Prenom} {Nom.ToUpper()}";
 
     public int NbNotes => _notes.Count;
 
+    // on peut lire les notes mais pas les modifier
     public IReadOnlyList<double> Notes => _notes;
 
+    // le nom et le prenom peuvent pas etre vides
     public Etudiant(string nom, string prenom, int annee)
     {
         if (string.IsNullOrWhiteSpace(nom))
@@ -45,6 +52,7 @@ public class Etudiant : IEquatable<Etudiant>
         Annee = annee;
     }
 
+    // la note doit etre entre 0 et 20 et le coef positif
     public void AjouterNote(double note, int coef = 1)
     {
         if (note < 0 || note > 20)
@@ -59,6 +67,7 @@ public class Etudiant : IEquatable<Etudiant>
         _coefs.Add(coef);
     }
 
+    // moyenne simple et 0 si pas de note
     public double Moyenne()
     {
         if (_notes.Count == 0)
@@ -74,6 +83,7 @@ public class Etudiant : IEquatable<Etudiant>
         return somme / _notes.Count;
     }
 
+    // somme des note fois coef divisee par la somme des coefs
     public double MoyennePonderee()
     {
         if (_notes.Count == 0)
@@ -91,25 +101,7 @@ public class Etudiant : IEquatable<Etudiant>
         return somme / totalCoefs;
     }
 
-    public bool Equals(Etudiant? autre)
-    {
-        if (autre is null)
-        {
-            return false;
-        }
-        return Nom == autre.Nom && Prenom == autre.Prenom && Naissance == autre.Naissance;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return Equals(obj as Etudiant);
-    }
-
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(Nom, Prenom, Naissance);
-    }
-
+    // affiche le prenom le nom en majuscule le niveau et la moyenne
     public override string ToString()
     {
         string niveau;
