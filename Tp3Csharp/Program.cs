@@ -1,4 +1,5 @@
 
+    // les boites d outils utilisees : Stopwatch, CultureInfo, JsonException, GetFromJsonAsync
     using System.Diagnostics;
     using System.Globalization;
     using System.Text.Json;
@@ -15,10 +16,12 @@
 
     // Q15 : on lance les 3 d abord puis on les attend ensemble -> environ 1 s
     var chrono2 = Stopwatch.StartNew();
+    // sans await : on recupere 3 tickets (Task) qui tournent en meme temps
     var A = OperationLenteAsync("A");
     var B = OperationLenteAsync("B");
     var C = OperationLenteAsync("C");
 
+    // on attend que les 3 soient finis
     await Task.WhenAll(A, B, C);
 
     Console.WriteLine($"when all: {chrono2.ElapsedMilliseconds} ms");
@@ -26,14 +29,18 @@
 
     // etape 0 : lecture des inscrits (c[3] = le code postal ajoute)
     var inscrits = File.ReadLines("etudiants.csv")
+        // saute la ligne d en-tete
         .Skip(1)
+        // decoupe chaque ligne aux virgules
         .Select(ligne => ligne.Split(','))
         .Select(c => new Inscrit(c[0], c[1], c[2], c[3]))
+        // on fige le resultat dans une vraie liste (le fichier n est lu qu une fois)
         .ToList();
 
     //on attends 6
     Console.WriteLine($"{inscrits.Count} inscrit");
 
+    // tests de l etape 1.1 : chacune de ces lignes plante exprès (note 24, coef -1)
     //new Note("Lovelance", "Ada", "Algo", 24, 2);
 
     //new Note("Lovelance", "Ada", "Algo", 24, -1);
@@ -49,6 +56,7 @@
 
     // Q19 : 35000 donne Rennes, 29200 donne Brest, 99999 donne une liste vide
     delai.CancelAfter(delaiMax); // le chrono des 3 s demarre ici
+    // un code qui existe, un autre qui existe, un qui n existe pas
     foreach (var cp in new[] { "35000", "29200", "99999" })
     {
         Console.WriteLine($"{cp} : {await VilleAsync(cp)}");
@@ -74,11 +82,13 @@
     // sinon la premiere version paie en plus le temps d ouverture des connexions
     delai.CancelAfter(delaiMax);
     var chronoParallele = Stopwatch.StartNew();
+    // les 6 requetes partent ensemble, on attend la plus lente
     await Task.WhenAll(inscrits.Select(i => VilleAsync(i.CodePostal)));
     Console.WriteLine($"requetes en parallele : {chronoParallele.ElapsedMilliseconds} ms");
 
     delai.CancelAfter(delaiMax);
     var chronoSuite = Stopwatch.StartNew();
+    // les 6 requetes une par une : on additionne les temps
     foreach (var inscrit in inscrits)
     {
         await VilleAsync(inscrit.CodePostal);
@@ -89,10 +99,12 @@
     // Q9 : on charge promo.json s il existe, sinon on importe le csv et on cree promo.json
     List<Note> notes;
 
+    // File.Exists renvoie true ou false
     if (File.Exists("promo.json"))
     {
         try
         {
+            // await : on attend la lecture du disque sans bloquer
             notes = await Stockage.ChargerAsync("promo.json");
         }
         catch(JsonException e)
@@ -104,6 +116,7 @@
         }
 
     }
+    // pas de promo.json : on lit le csv puis on cree le json pour la prochaine fois
     else
     {
         notes = ChargerNotes("notes.csv");
@@ -116,26 +129,34 @@
     // une note hors 0-20 est refusee par le record lui meme (ArgumentOutOfRangeException)
     static Note ParserStrict(string ligne, int numero)
     {
+        // c[0] nom, c[1] prenom, c[2] matiere, c[3] note, c[4] coef
         var c = ligne.Split(',');
+        // porte 1 : le texte doit avoir la bonne forme, sinon FormatException
         if (c.Length != 5) throw new FormatException($"Ligne {numero} champs manquants : {c.Length}");
+        // TryParse essaie sans planter, InvariantCulture = le point comme separateur decimal
         if (!double.TryParse(c[3], CultureInfo.InvariantCulture, out var v)) throw new FormatException($"Ligne {numero} note invalide {c[3]}");
         if (!int.TryParse(c[4], out var coef)) throw new FormatException($"Ligne {numero} coefss invalide {c[4]}");
+        // porte 2 : le record verifie les valeurs (0-20 et coef > 0)
         return new Note(c[0], c[1], c[2], v, coef);
     }
 
     // Q5 : lit le csv, garde les notes valides, signale chaque ligne rejetee sur Console.Error
     static List<Note> ChargerNotes(string chemin)
     {
+        // le bac vide ou on range les notes valides
         List<Note> notes = new List<Note>();
         int numero = 2;
     foreach (var ligne in File.ReadLines(chemin).Skip(1))
         {
+            // si ParserStrict plante, on saute directement au catch
             try{var note = ParserStrict(ligne, numero);
             notes.Add(note);}
+            // erreur de forme (champs manquants, note pas numerique)
             catch (FormatException e)
             {
                 Console.Error.WriteLine($"messaage :{e.Message} ligne {numero}");
             }
+            // erreur de valeur lancee par le record (note 25, coef 0)
             catch(ArgumentOutOfRangeException e){Console.Error.WriteLine($"messaage :{e.Message} ligne {numero}");}
             // hors du try pour avancer a chaque tour
             numero ++;
@@ -158,7 +179,10 @@ return $"{nom} terminée";
 // pas static : elle utilise http et delai de la zone du haut
 async Task<List<Commune>> CommunesAsync(string codePostal)
 {
+    // envoie la requete et transforme la reponse json en liste de Commune
+    // delai.Token : la requete s arrete si le delai est depasse
     var communes = await http.GetFromJsonAsync<List<Commune>>($"communes?codePostal={codePostal}", delai.Token);
+    // plan B : liste vide si la reponse est null
     return communes ?? [];
 }
 
@@ -169,6 +193,7 @@ async Task<string> VilleAsync(string codePostal)
     try
     {
         var communes = await CommunesAsync(codePostal);
+        // liste vide -> FirstOrDefault donne null -> ?. evite le plantage -> ?? donne le texte
         return communes.FirstOrDefault()?.Nom ?? "commune inconnue";
     }
     catch (HttpRequestException e)

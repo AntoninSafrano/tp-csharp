@@ -7,11 +7,14 @@
     new(JsonSerializerDefaults.Web) { WriteIndented = true };
     // Serialize = objet -> texte json, Deserialize = texte json -> objet (?? si null)
     public static void Sauver(string chemin, List<Note> notes) => File.WriteAllText(chemin, JsonSerializer.Serialize(notes, Options));
+    // <List<Note>> dit a Deserialize quel objet fabriquer
     public static List<Note> Charger(string chemin) => JsonSerializer.Deserialize<List<Note>>( File.ReadAllText(chemin) , Options ) ?? new List<Note>();
 
      // etape 3 : versions async, le await porte sur l acces au disque
      public static async Task SauverAsync(string chemin, List<Note> notes) => await File.WriteAllTextAsync(chemin, JsonSerializer.Serialize(notes, Options));
+    // Task<List<Note>> = la promesse d une liste, on l obtient avec await
     public static async Task<List<Note>> ChargerAsync(string chemin) => JsonSerializer.Deserialize<List<Note>>(await File.ReadAllTextAsync(chemin) , Options ) ?? new List<Note>();
+    // doublon de Modele.cs, range dans Stockage (son nom complet est Stockage.Commune)
     public record Commune(string Nom, string Code, int? Population);
     
     }

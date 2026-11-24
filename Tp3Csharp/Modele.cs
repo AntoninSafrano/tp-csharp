@@ -5,6 +5,7 @@ using System.Reflection.Metadata;
 // Q3 : le coef doit etre > 0 (methode d aide ThrowIfNegativeOrZero)
 public record Note(string Nom, string Prenom, string Matiere, double Valeur, int Coef)
 {
+   // on redefinit Valeur pour la verifier : ? = si c est bon on garde, : = sinon on lance l erreur
    public double Valeur {get; init;} = Valeur >= 0 && Valeur <= 20 ? Valeur : throw new ArgumentOutOfRangeException(nameof(Valeur), "Note pas comprise entre 0 et 20");
     
     // static car appelee pendant la creation de l objet
@@ -12,6 +13,7 @@ public record Note(string Nom, string Prenom, string Matiere, double Valeur, int
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(coef);
         return coef;
     }
+    // Coef passe par Positif avant d etre range
     public int Coef { get; init; } = Positif(Coef) ;   
 }
 // un etudiant avec son code postal (etape 0)
