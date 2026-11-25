@@ -2,4 +2,5 @@
   <Project Path="Tp2Ssharp/Tp2Ssharp.csproj" />
   <Project Path="Tp3Csharp/Tp3Csharp.csproj" />
   <Project Path="TpCsharp/TpCsharp.csproj" />
+  <Project Path="TpEf/TpEf.csproj" />
 </Solution>

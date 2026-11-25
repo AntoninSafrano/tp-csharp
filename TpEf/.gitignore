@@ -1,0 +1,4 @@
+# la base se recree avec dotnet ef database update : on ne la rend pas
+*.db
+*.db-shm
+*.db-wal
