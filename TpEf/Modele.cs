@@ -11,6 +11,9 @@ public class Etudiant
     public string Prenom { get; set; } = "";
     public string Promo { get; set; } = "";
 
+    // Q17 : string? donc la colonne accepte null
+    public string? Email { get; set; }
+
     // ses notes (un étudiant a plusieurs notes)
     public List<Note> Notes { get; set; } = [];
 }
