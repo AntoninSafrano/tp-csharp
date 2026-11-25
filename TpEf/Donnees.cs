@@ -1,11 +1,9 @@
-// ===== fichier fourni par le sujet : les données de la promo =====
-// les mêmes étudiants et les mêmes notes qu'aux séances précédentes
-// Margaret Hamilton n'a aucune note : c'est volontaire
+// fichier fourni : les 6 étudiants et leurs notes
+// Margaret Hamilton n'a aucune note (c'est voulu)
 
 public static class Donnees
 {
-    // renvoie les 6 étudiants, chacun avec ses notes déjà rangées dans sa liste Notes
-    // [ ... ] : expression de collection, elle crée la List<Etudiant>
+    // renvoie la liste des étudiants avec leurs notes
     public static List<Etudiant> Promo() =>
     [
         Creer("Lovelace", "Ada", "M1",
@@ -21,20 +19,14 @@ public static class Donnees
         Creer("Hamilton", "Margaret", "M2"),
     ];
 
-    // fabrique un étudiant et ses notes
-    // params : on peut passer autant de notes qu'on veut, séparées par des virgules (ou aucune)
-    // chaque note est un tuple (Matiere, Valeur, Coef)
+    // crée un étudiant et ajoute ses notes dans sa liste
+    // params : on peut donner autant de notes qu'on veut (ou aucune)
     static Etudiant Creer(string nom, string prenom, string promo,
         params (string Matiere, double Valeur, int Coef)[] notes)
     {
-        // initialiseur d'objet : on crée l'étudiant et on remplit ses propriétés
         var e = new Etudiant { Nom = nom, Prenom = prenom, Promo = promo };
-
-        // on déballe chaque tuple en 3 variables, et on ajoute la note à SA liste
-        // pas besoin de remplir EtudiantId : EF Core le déduira de la liste au moment d'enregistrer
         foreach (var (m, v, c) in notes)
             e.Notes.Add(new Note { Matiere = m, Valeur = v, Coef = c });
-
         return e;
     }
 }
